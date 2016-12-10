@@ -2,14 +2,6 @@ import socket
 import os
 
 def sendFile(s):
-
-
-def Main():
-    host = '127.0.0.1'
-    port = 5000
-
-    s = socket.socket()
-    s.connect((host, port))
     filename = raw_input("Filename? -> ")
     if filename != 'q':
         s.send(filename)
@@ -23,8 +15,20 @@ def Main():
                 while bytesToSend != "":
                     bytesToSend = f.read(1024)
                     s.send(bytesToSend)
+                print("SEND COMPLETE")
+    s.close()
+
+def Main():
+    host = '127.0.0.1'
+    port = 5000
+
+    s = socket.socket()
+    s.connect((host, port))
+
+    sendFile(s)
 
     s.close()
+
 
 
 if __name__ == '__main__':
