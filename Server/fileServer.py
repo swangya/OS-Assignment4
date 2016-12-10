@@ -5,7 +5,7 @@ def getFile(sock):
     filename = sock.recv(1024)
     data = sock.recv(1024)
     filesize = long(data)
-    f = open('new_'+filename, 'wb')
+    f = open(filename, 'wb')
     data = sock.recv(1024)
     totalRecv = len(data)
     f.write(data)
@@ -14,11 +14,27 @@ def getFile(sock):
         totalRecv += len(data)
         f.write(data)
         print "{0:.2f}".format((totalRecv/float(filesize))*100)+ "% Done"
-    print "Download Complete!"
+    print("FILE RECEIVED")
     f.close()
 
     sock.close();
 
+def sendFile(sock):
+    filename = sock.recv(1024)
+    if os.path.isfile(filename):
+        sock.send("EXISTS " + str(os.path.getsize(filename)))
+        userResponse = sock.recv(1024)
+        if userResponse[:2] == 'OK':
+            with open(filename, 'rb') as f:
+                bytesToSend = f.read(1024)
+                sock.send(bytesToSend)
+                while bytesToSend != "":
+                    bytesToSend = f.read(1024)
+                    sock.send(bytesToSend)
+    else:
+        sock.send("ERR ")
+
+    sock.close()
 
 
 def Main():
@@ -35,7 +51,12 @@ def Main():
     while True:
         c, addr = s.accept()
         print "client connedted ip:<" + str(addr) + ">"
-        getFile(c);
+        choice = c.recv(1024)
+
+        if(choice=="1"):
+            getFile(c)
+        if(choice=="2"):
+            sendFile(c)
 
     s.close();
 
