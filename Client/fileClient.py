@@ -1,3 +1,9 @@
+#CSE 3320
+#LAB 4
+#Swangya Saurav
+#1001054908
+
+
 import socket
 import os, random
 
@@ -126,13 +132,13 @@ def Main():
     s = socket.socket()
     s.connect((host, port))
 
-    print("What do you want to do?\n")
-    choice = raw_input("1. Send File  2. Receive File \n ->")
+    print("\nWhat do you want to do?\n")
+    choice = raw_input("\t1. Send File\n  \t2. Receive File\n \t-> ")
 
     if(choice=="1"):
         s.send(choice)
         sendFile(s)
-    if(choice=="2"):
+    elif(choice=="2"):
         s.send(choice)
         getFile(s)
 
