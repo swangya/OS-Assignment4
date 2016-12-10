@@ -58,8 +58,8 @@ def getKey(password):
 
 
 def sendFile(s):
-    filename = raw_input("Filename? -> ")
-    password = raw_input("Password? -> ")
+    filename = raw_input("Filename -> ")
+    password = raw_input("Password for this File -> ")
 
     encrypt(getKey(password), filename)
 
@@ -79,10 +79,17 @@ def sendFile(s):
                     bytesToSend = f.read(1024)
                     s.send(bytesToSend)
                 print("SEND COMPLETE")
+
     s.close()
+    os.remove(filename)
 
 def getFile(s):
-    filename = raw_input("Filename? -> ")
+    filename = raw_input("Filename do not include '(encrypted)' -> ")
+    password = raw_input("Password for this File -> ")
+    filename1 = filename
+
+    filename = "(encrypted)"+filename
+
     if filename != 'q':
         s.send(filename)
         data = s.recv(1024)
@@ -102,8 +109,13 @@ def getFile(s):
                     print "{0:.2f}".format((totalRecv/float(filesize))*100)+ "% Done"
                 print "Download Complete!"
                 f.close()
+
+                decrypt(getKey(password), filename)
         else:
             print "File Does Not Exist!"
+
+        s.close()
+        os.remove(filename)
 
 
 def Main():
@@ -115,7 +127,7 @@ def Main():
     s.connect((host, port))
 
     print("What do you want to do?\n")
-    choice = raw_input("1. Send File  2. Receive File")
+    choice = raw_input("1. Send File  2. Receive File \n ->")
 
     if(choice=="1"):
         s.send(choice)
